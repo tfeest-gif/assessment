@@ -3,10 +3,12 @@
 Calculates how many shares to buy or sell so that every security in an account
 reaches its target %, plus manual and automated tests for it.
 
-**Answer for Account ABC:** buy **66 IBM** and sell **46 ORCL**; no trades for
-MSFT, AAPL or HD. Exactly, that would be 66.67 and 45.45 shares. With whole
-shares, sells are rounded up and buys rounded down, so the sale ($10,120) pays
-for the purchase ($9,900).
+**Answer for Account ABC:** to reach zero target variance, **buy 66.6667 IBM**
+($10,000) and **sell 45.4545 ORCL** ($10,000); no trades for MSFT, AAPL or HD.
+
+If only whole shares can be traded, zero variance isn't reachable. The optional
+whole-share mode buys 66 IBM and sells 46 ORCL: sells round up and buys round down,
+so the sale ($10,120) pays for the purchase ($9,900).
 
 ## Contents
 
@@ -17,9 +19,11 @@ for the purchase ($9,900).
 | `tests/Rebalancing.Tests/RebalancerTests.cs` | Functional tests, TC-01 to TC-11 |
 | `tests/Rebalancing.Tests/ValidationTests.cs` | Invalid input, TC-12 to TC-19 |
 
-C# / .NET with xUnit.
+C# / .NET with xUnit. All assumptions are listed in `TEST_CASES.md`.
 
 ## Run
+
+Requires the [.NET 10 SDK].
 
 ```bash
 dotnet test

@@ -1,6 +1,6 @@
 namespace Rebalancing;
 
-public enum ShareMode { Whole, Fractional }
+public enum ShareMode { Fractional, Whole }
 
 public enum TradeAction { Hold, Buy, Sell }
 
@@ -16,7 +16,7 @@ public record Trade(string Symbol, decimal VariancePct, TradeAction Action, deci
 /// </summary>
 public static class Rebalancer
 {
-    public static List<Trade> Rebalance(decimal totalAssets, IReadOnlyList<Position> positions, ShareMode mode = ShareMode.Whole)
+    public static List<Trade> Rebalance(decimal totalAssets, IReadOnlyList<Position> positions, ShareMode mode = ShareMode.Fractional)
     {
         Validate(totalAssets, positions);
         return positions.Select(p => CalculateTrade(totalAssets, p, mode)).ToList();
@@ -30,6 +30,7 @@ public static class Rebalancer
         decimal shares;
         if (mode == ShareMode.Fractional)
         {
+            // Exact answer (zero variance), reported to 4 decimals.
             shares = Math.Round(exactShares, 4, MidpointRounding.AwayFromZero);
         }
         else if (variance > 0)

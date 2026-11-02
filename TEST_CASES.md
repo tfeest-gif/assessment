@@ -12,14 +12,19 @@
 
 **Formula:** shares = |current % − target %| / 100 × total assets / unit price
 
+**To reach zero target variance:** buy 66.6667 IBM and sell 45.4545 ORCL. Only
+fractional shares reach exactly zero; the current holdings are already fractional
+too (e.g. 136.3636 ORCL, 222.2222 MSFT).
+
 ## Assumptions
 
 1. Total assets = sum of all holdings. The account has **no cash**, so buys are paid for by sells.
 2. No fees or taxes, and prices don't change during the rebalance.
 3. Target % and current % must each add up to exactly 100, and each value must be between 0 and 100.
-4. **Fractional mode** shows the exact number of shares (4 decimals). **Whole-share mode** (default) rounds sells **up** and buys **down**. That way the sales always cover the purchases; the small surplus stays as cash ($220 for Account ABC). Exactly zero variance is not possible with whole shares.
-5. A sell never exceeds the shares held.
+4. **Fractional mode** (default) gives the exact number of shares, rounded to 4 decimals. That rounding can leave differences of a few cents (Account ABC: buys $10,000.005, sells $9,999.99).
+5. **Whole-share mode** (optional) is for brokers that only trade whole shares. It rounds sells **up** and buys **down**, so the sales always cover the purchases; the small surplus stays as cash ($220 for Account ABC). Zero variance is not reachable this way; each security ends up less than one share away from target. A sell never exceeds the shares held.
 6. Money is calculated with `decimal`, not `double`, to avoid rounding errors.
+7. No application was provided, so `Rebalancer.cs` is a minimal implementation for the automated tests to run against. The manual test cases assume the real application has an input form like the table in the assignment, with a Rebalance button and an output column.
 
 ## Test cases
 
@@ -30,8 +35,8 @@ rebalance, and compare the output column with the expected result.
 
 | ID | Scenario | Input | Expected | Automated |
 |---|---|---|---|---|
-| TC-01 | Account ABC, fractional | see table above | IBM BUY 66.6667, ORCL SELL 45.4545, rest HOLD | ✔ |
-| TC-02 | Account ABC, whole shares | see table above | IBM BUY 66, ORCL SELL 46, rest HOLD | ✔ |
+| TC-01 | Account ABC (default: exact shares) | see table above | IBM BUY 66.6667, ORCL SELL 45.4545, rest HOLD | ✔ |
+| TC-02 | Account ABC, whole-share mode | see table above | IBM BUY 66, ORCL SELL 46, rest HOLD | ✔ |
 | TC-03 | Target variance column | Account ABC | −10, 0, +10, 0, 0 | ✔ |
 | TC-04 | Fractional trades reach zero variance | Account ABC | every security at $20,000 afterwards | ✔ |
 | TC-05 | Buys are paid for by sells | Account ABC, whole | sold $10,120 ≥ bought $9,900 | ✔ |
